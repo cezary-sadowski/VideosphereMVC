@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity; //metoda Include()
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -26,7 +27,7 @@ namespace Videosphere.Controllers
         // GET: Customers
         public ViewResult Index()
         {
-            var customers = _context.Customers.ToList(); //teraz z bazy.
+            var customers = _context.Customers.Include(c => c.MembershipType).ToList(); //teraz z bazy. Include - Eager Loading.
 
             //entity framework nie robi zapytania sql. pobierze customersow podczas iteracji przez ten obiekt lub .ToList().
 
