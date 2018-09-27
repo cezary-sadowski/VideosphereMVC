@@ -9,32 +9,39 @@ namespace Videosphere.Controllers
 {
     public class CustomersController : Controller
     {
+        //pobieranie customersow z bazy a nie hard-coded:
+
+        private ApplicationDbContext _context; //convention
+
+        public CustomersController() //convention
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing) //wzorzec dispose (convention).
+        {
+            _context.Dispose();
+        }
+
         // GET: Customers
         public ViewResult Index()
         {
-            var customers = GetCustomers(); //w zmiennej siedzi lista.
+            var customers = _context.Customers.ToList(); //teraz z bazy.
+
+            //entity framework nie robi zapytania sql. pobierze customersow podczas iteracji przez ten obiekt lub .ToList().
 
             return View(customers);
         }
 
         public ActionResult Details(int id)
         {
-            var customer = GetCustomers().SingleOrDefault(c => c.Id == id);
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            //tutaj query bedzie od razu przez SingleOrDefault(...).
 
             if (customer == null)
                 return HttpNotFound();
 
             return View(customer);
-        }
-
-        private IEnumerable<Customer> GetCustomers()
-        {
-            return new List<Customer>
-            {
-            new Customer { Id = 1, Name = "Cezary Sadowski" },
-            new Customer { Id = 2, Name = "Artur Jasek" },
-            new Customer { Id = 3, Name = "Katarzyna Jasek"}
-            };
         }
     }
 }
