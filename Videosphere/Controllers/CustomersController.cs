@@ -36,7 +36,7 @@ namespace Videosphere.Controllers
 
         public ActionResult Details(int id)
         {
-            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id); //Include - Eager Loading.
             //tutaj query bedzie od razu przez SingleOrDefault(...).
 
             if (customer == null)
