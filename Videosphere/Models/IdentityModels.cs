@@ -21,6 +21,7 @@ namespace Videosphere.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Customer> Customers { get; set; } //DbSet - kolumna. Wrzucam customersow.
+        public DbSet<Movie> Movies { get; set; } //Db set zeby ogarnial migracje.
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

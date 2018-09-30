@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,19 +11,37 @@ namespace Videosphere.Controllers
 {
     public class MoviesController : Controller 
     {
-        public ViewResult Index()
+        private ApplicationDbContext _context;
+
+        public MoviesController()
         {
-            var movies = GetMovies();
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing) //dobrze rozpisane na stackov. convention.
+        {
+            base.Dispose(disposing);
+        }
+
+        public ViewResult Index() //ViewResult bo konkretnie zwracam tylko View a nie zaleznie od sytuacji.
+        {
+            var movies = _context.Movies.Include(m => m.Genre).ToList();
             return View(movies);
         }
-        private IEnumerable<Movie> GetMovies()
+
+        public ActionResult Details(int id) //ActionResult bo to base klas i moge zwrocic 404error lub view.
         {
-            return new List<Movie>
-            {
-                new Movie { Id = 1, Name = "Matrix" },
-                new Movie { Id = 2, Name = "Ghost in the shell" }
-            };
+            var movie = _context.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id); // ==id bo param.
+
+            if (movie == null)
+                return HttpNotFound();
+
+            return View(movie);
         }
+
+
+
+
 
         // GET: Movies/Random
         
@@ -51,7 +70,7 @@ namespace Videosphere.Controllers
 
 
 
-        //Route nizej moge uzywac bo w RouteConfig.cs jest routes.MapMvcAttributeRoutes();
+        //Route nizej moge uzywac bo w RouteConfig.cs mam routes.MapMvcAttributeRoutes();
         /*
         [Route("movies/released/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1, 12)}")]
         public ActionResult ByReleaseDate(int year, int month) //w sumie dla month moglbym byte.
@@ -83,14 +102,14 @@ namespace Videosphere.Controllers
         // if page index is not specified, display the movies in page 1.
         // if sortBy is not specified, sort movies by their names.
         // to make parameters optional, make it nullable.
-        // ? za int robi go nullable. string jest reference type wiec jest nullable.
+        // string jest reference type wiec jest nullable.
     }
 }
 
 
 /* ACTION - a method in a controller for handling a request.
  * 
- * w zaleznosci od akcji zawsze returnuje instancje klas, ktore po niej dziedzicza.
+ * w zaleznosci od akcji zawsze zwraca instancje klas, ktore po niej dziedzicza.
  * View() pomocnicza metoda dziedziczona po 'Controller'.
  * zamiast View(param) moge: return new ViewResult(param);
  * 
