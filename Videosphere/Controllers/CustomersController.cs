@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Videosphere.Models;
+using Videosphere.ViewModels;
 
 namespace Videosphere.Controllers
 {
@@ -22,6 +23,27 @@ namespace Videosphere.Controllers
         protected override void Dispose(bool disposing) //wzorzec dispose (convention).
         {
             _context.Dispose();
+        }
+
+        public ActionResult New() //Custromers/New
+        {
+            //do dropdown potrzebuje liste membershipTypes z bazy. (najpierw DbSet)
+
+            var membershipTypes = _context.MembershipTypes.ToList();
+
+            var viewModel = new NewCustomerViewModel()
+            {
+                MembershipTypes = membershipTypes
+            };
+
+            return View(viewModel); 
+            //membershipTypes lepiej przez ViewModel bo pozniej potrzebuje przeslac customersow w razie implementacji edycji.
+        }
+
+        [HttpPost]
+        public ActionResult Create(Customer customer) //model binding (MVC bind this model to the request data)
+        {
+            return View(); //zamiast NewCustomerViewModel moge Customer customer i MVC jest smart enough :) (Property sa z prefix Customer. )
         }
 
         // GET: Customers
