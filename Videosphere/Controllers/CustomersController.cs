@@ -31,19 +31,22 @@ namespace Videosphere.Controllers
 
             var membershipTypes = _context.MembershipTypes.ToList();
 
-            var viewModel = new NewCustomerViewModel()
+            var viewModel = new CustomerEditFormViewModel()
             {
                 MembershipTypes = membershipTypes
             };
 
-            return View(viewModel); 
+            return View("CustomerEditForm", viewModel); 
             //membershipTypes lepiej przez ViewModel bo pozniej potrzebuje przeslac customersow w razie implementacji edycji.
         }
 
         [HttpPost]
         public ActionResult Create(Customer customer) //model binding (MVC bind this model to the request data)
         {
-            return View(); //zamiast NewCustomerViewModel moge Customer customer i MVC jest smart enough :) (Property sa z prefix Customer. )
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Customers"); //zamiast NewCustomerViewModel moge Customer customer i MVC jest smart enough :) (Property sa z prefix Customer. )
         }
 
         // GET: Customers
@@ -65,6 +68,22 @@ namespace Videosphere.Controllers
                 return HttpNotFound();
 
             return View(customer);
+        }
+
+        public ActionResult Edit(int id ) //id bo w view index w action link.
+        {
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+            if (customer == null)
+                return HttpNotFound();
+
+            var viewModel = new CustomerEditFormViewModel
+            {
+                Customer = customer,
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+
+            return View("CustomerEditForm", viewModel);
         }
     }
 }

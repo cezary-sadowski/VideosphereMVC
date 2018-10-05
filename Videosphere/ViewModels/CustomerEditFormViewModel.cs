@@ -6,7 +6,7 @@ using Videosphere.Models;
 
 namespace Videosphere.ViewModels
 {
-    public class NewCustomerViewModel
+    public class CustomerEditFormViewModel
     {
         public IEnumerable<MembershipType> MembershipTypes { get; set; }
         public Customer Customer { get; set; }

@@ -1,4 +1,4 @@
-﻿@model Videosphere.ViewModels.NewCustomerViewModel
+﻿@model Videosphere.ViewModels.CustomerEditFormViewModel
 
 @{
                 /**/
@@ -20,7 +20,7 @@
 
     <div class="form-group">
         @Html.LabelFor(m => m.Customer.DateOfBirth)
-        @Html.TextBoxFor(m => m.Customer.DateOfBirth, new { @class = "form-control" })
+        @Html.TextBoxFor(m => m.Customer.DateOfBirth, "{0:d MMM yyyy}", new { @class = "form-control" })
     </div>
 
     <div class="checkbox">
