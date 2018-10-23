@@ -41,9 +41,22 @@ namespace Videosphere.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Customer customer) //model binding (MVC bind this model to the request data)
+        public ActionResult Save(Customer customer) //model binding (MVC bind this model to the request data)
         {
-            _context.Customers.Add(customer);
+            if (customer.Id == 0)
+                _context.Customers.Add(customer);
+
+            else
+            {
+                var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+
+                //TryUpdateModel(customerInDb);
+
+                customerInDb.Name = customer.Name;
+                customerInDb.DateOfBirth = customer.DateOfBirth;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+            }
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Customers"); //zamiast NewCustomerViewModel moge Customer customer i MVC jest smart enough :) (Property sa z prefix Customer. )
