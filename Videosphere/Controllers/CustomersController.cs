@@ -43,6 +43,16 @@ namespace Videosphere.Controllers
         [HttpPost]
         public ActionResult Save(Customer customer) //model binding (MVC bind this model to the request data)
         {
+            if(!ModelState.IsValid)
+            {
+                var viewModel = new CustomerEditFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _context.MembershipTypes.ToList()
+                };
+                return View("CustomerEditForm", viewModel);
+            }
+
             if (customer.Id == 0)
                 _context.Customers.Add(customer);
 

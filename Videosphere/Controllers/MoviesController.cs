@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Videosphere.Models;
 using Videosphere.ViewModels;
 using Videosphere.Migrations;
+using System.Data.Entity.Validation;
 
 namespace Videosphere.Controllers
 {
@@ -102,6 +103,7 @@ namespace Videosphere.Controllers
             if (movie.Id == 0)
             {
                 movie.AddDate = DateTime.Now;
+
                 _context.Movies.Add(movie);
             }
             else
@@ -114,6 +116,7 @@ namespace Videosphere.Controllers
             }
 
             _context.SaveChanges();
+            
 
             return RedirectToAction("Index", "Movies");
         }
